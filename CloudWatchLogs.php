@@ -1,0 +1,39 @@
+<?php
+
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
+/**
+ * プラグインのメインクラス
+ */
+class CloudWatchLogs extends SC_Plugin_Base
+{
+    public function install($arrPlugin, SC_Plugin_Installer $objPluginInstaller = null)
+    {
+    }
+
+    public function uninstall($arrPlugin, SC_Plugin_Installer $objPluginInstaller = null)
+    {
+    }
+
+    public function enable($arrPlugin, SC_Plugin_Installer $objPluginInstaller = null)
+    {
+    }
+
+    public function disable($arrPlugin, SC_Plugin_Installer $objPluginInstaller = null)
+    {
+    }
+
+    /**
+     * 処理の介入箇所とコールバック関数を設定
+     * registerはプラグインインスタンス生成時に実行されます
+     *
+     * @param SC_Helper_Plugin $objHelperPlugin
+     * @param int $priority
+     */
+    public function register(SC_Helper_Plugin $objHelperPlugin, $priority)
+    {
+        parent::register($objHelperPlugin, $priority);
+    }
+}

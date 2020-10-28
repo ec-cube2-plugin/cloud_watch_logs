@@ -1,0 +1,26 @@
+{
+    "name": "ec-cube2-plugin/cloud_watch_logs",
+    "type": "eccube2-plugin",
+    "license": "LGPL-3.0",
+    "authors": [
+        {
+            "name": "Tsuyoshi Tsurushima"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "ec-cube2/plugin-installer": "^1.0",
+        "maxbanton/cwh": "^1.1",
+        "monolog/monolog": "^1.25",
+        "aws/aws-sdk-php": "^3.158"
+    },
+    "require-dev": {
+        "ec-cube2/ec-cube2": "^2.13",
+        "ec-cube2/cli": "^1.4"
+    },
+    "autoload": {
+        "files": ["src/bootstrap.php"],
+        "classmap": ["CloudWatchLogs.php", "data/"],
+        "psr-4": {"CloudWatchLogs\\": "src/CloudWatchLogs/"}
+    }
+}
