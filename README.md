@@ -8,6 +8,31 @@ EC-CUBE2のロギングをCloudWatch Logsに置き換えます。
 `GC_Utils::gfPrintLog` メソッドを置き換えます。
 
 
+設定
+----
+
+`%name%` は、 `error` のようにファイル名に置き換えられます。
+
+```
+define('AWS_REGION', 'ap-northeast-1');
+define('CLOUDWATCH_LOGS_GROUP_NAME', '/eccube/SampleLogGroupName/%name%');
+define('CLOUDWATCH_LOGS_STREAM_NAME', 'eccube');
+```
+
+オプションで以下のパラメーターも設定できます。
+
+```
+define('CLOUDWATCH_LOGS_RETENTION', 14);
+```
+
+
+アーキテクチャ
+------------
+
+本来、 `GC_Utils` は拡張できないためトリッキーな方法を利用しクラスを拡張しています。
+また、振る舞いの悪い決済プラグインでは、 `GC_Utils_Ex` を利用せず `GC_Utils` を直接利用しているため、本プラグインでは `GC_Utils` を拡張しています。
+
+
 IAM
 ---
 
@@ -33,7 +58,7 @@ IAM User の `AWS_ACCESS_KEY_ID` `AWS_SECRET_ACCESS_KEY` は利用してはい�
                 "logs:PutLogEvents",
                 "logs:GetLogEvents"
             ],
-            "Resource": "arn:aws:logs:ap-northeast-1:123456789012:log-group:SampleLogGroupName:*"
+            "Resource": "arn:aws:logs:ap-northeast-1:123456789012:log-group:/eccube/SampleLogGroupName/*:*"
         }
     ]
 }
