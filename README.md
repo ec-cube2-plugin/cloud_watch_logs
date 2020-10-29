@@ -51,14 +51,26 @@ IAM User の `AWS_ACCESS_KEY_ID` `AWS_SECRET_ACCESS_KEY` は利用してはい�
             "Effect": "Allow",
             "Action": [
                 "logs:CreateLogGroup",
-                "logs:DescribeLogGroups",
+                "logs:DescribeLogGroups"
+            ],
+            "Resource": "arn:aws:logs:ap-northeast-1:123456789012:*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "logs:CreateLogStream",
                 "logs:DescribeLogStreams",
-                "logs:PutRetentionPolicy",
+                "logs:PutRetentionPolicy"
+            ],
+            "Resource": "arn:aws:logs:ap-northeast-1:123456789012:log-group:/eccube/SampleLogGroupName/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "logs:PutLogEvents",
                 "logs:GetLogEvents"
             ],
-            "Resource": "arn:aws:logs:ap-northeast-1:123456789012:log-group:/eccube/SampleLogGroupName/*:*"
+            "Resource": "arn:aws:logs:ap-northeast-1:123456789012:log-group:/eccube/SampleLogGroupName/*:*:*"
         }
     ]
 }

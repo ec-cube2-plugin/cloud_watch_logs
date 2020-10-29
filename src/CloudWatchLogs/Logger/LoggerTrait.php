@@ -4,7 +4,9 @@ namespace CloudWatchLogs\Logger;
 
 use Aws\CloudWatchLogs\CloudWatchLogsClient;
 use Maxbanton\Cwh\Handler\CloudWatch;
+use Monolog\Formatter\JsonFormatter;
 use Monolog\Logger;
+use Monolog\Processor\WebProcessor;
 
 trait LoggerTrait
 {
@@ -78,6 +80,7 @@ trait LoggerTrait
         }
 
         if (!isset(self::$logger[$name])) {
+            // handler
             $client = static::getCloudWatchLogsClient();
             $group = str_replace(['%name%'], [$name], CLOUDWATCH_LOGS_GROUP_NAME);
             $stream = str_replace(['%name%'], [$name], CLOUDWATCH_LOGS_STREAM_NAME);;
@@ -87,9 +90,11 @@ trait LoggerTrait
                 $retention = null;
             }
             $handler = new CloudWatch($client, $group, $stream, $retention, 10000);
+            $handler->setFormatter(new JsonFormatter());
 
             $logger = new Logger($name);
             $logger->pushHandler($handler);
+            $logger->pushProcessor(new WebProcessor());
 
             self::$logger[$name] = $logger;
         }
