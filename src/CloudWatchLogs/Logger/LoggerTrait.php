@@ -40,6 +40,19 @@ trait LoggerTrait
         } else {
             $logger->info($msg);
         }
+
+        if ($verbose) {
+            $debugMessage = '';
+            if (\GC_Utils_Ex::isFrontFunction()) {
+                $debugMessage .= 'customer_id = ' . $_SESSION['customer']['customer_id'] . "\n";
+            }
+            if (\GC_Utils_Ex::isAdminFunction()) {
+                $debugMessage .= 'login_id = ' . $_SESSION['login_id'] . '(' . $_SESSION['authority'] . ')' . '[' . session_id() . ']' . "\n";
+            }
+            $debugMessage .= \GC_Utils_Ex::toStringBacktrace(\GC_Utils_Ex::getDebugBacktrace());
+
+            $logger->debug($debugMessage);
+        }
     }
 
     public static function getCloudWatchLogsClient()
@@ -83,7 +96,7 @@ trait LoggerTrait
             // handler
             $client = static::getCloudWatchLogsClient();
             $group = str_replace(['%name%'], [$name], CLOUDWATCH_LOGS_GROUP_NAME);
-            $stream = str_replace(['%name%'], [$name], CLOUDWATCH_LOGS_STREAM_NAME);;
+            $stream = str_replace(['%name%'], [$name], CLOUDWATCH_LOGS_STREAM_NAME);
             if (defined('CLOUDWATCH_LOGS_RETENTION') && CLOUDWATCH_LOGS_RETENTION !== '') {
                 $retention = CLOUDWATCH_LOGS_RETENTION;
             } else {

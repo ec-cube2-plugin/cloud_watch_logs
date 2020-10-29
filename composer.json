@@ -12,7 +12,8 @@
         "ec-cube2/plugin-installer": "^1.0",
         "maxbanton/cwh": "^1.1",
         "monolog/monolog": "^1.25",
-        "aws/aws-sdk-php": "^3.158"
+        "aws/aws-sdk-php": "^3.158",
+        "ext-json": "*"
     },
     "require-dev": {
         "ec-cube2/ec-cube2": "^2.13",
