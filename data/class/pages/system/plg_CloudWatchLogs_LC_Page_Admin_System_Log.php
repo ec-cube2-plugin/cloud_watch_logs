@@ -1,5 +1,7 @@
 <?php
 
+use Aws\CloudWatchLogs\Exception\CloudWatchLogsException;
+
 /**
  * LC_Page_Admin_System_Log
  */
@@ -22,12 +24,20 @@ class plg_CloudWatchLogs_LC_Page_Admin_System_Log extends LC_Page_Admin_System_L
         $stream = str_replace(['%name%'], [$name], CLOUDWATCH_LOGS_STREAM_NAME);
 
         $client = GC_Utils_Ex::getCloudWatchLogsClient();
-        $result = $client->getLogEvents([
-            'limit' => $this->line_max,
-            'logGroupName' => $group,
-            'logStreamName' => $stream,
-            'startFromHead' => false,
-        ]);
+        try {
+            $result = $client->getLogEvents([
+                'limit' => $this->line_max,
+                'logGroupName' => $group,
+                'logStreamName' => $stream,
+                'startFromHead' => false,
+            ]);
+        } catch (CloudWatchLogsException $e) {
+            if ($e->getAwsErrorType() === 'ResourceNotFoundException') {
+                return [];
+            }
+
+            throw $e;
+        }
 
         $arrLogs = array();
         foreach ($result['events'] as $event) {
