@@ -58,7 +58,7 @@ class CloudWatchLogs extends SC_Plugin_Base
      */
     public function prefilterTransform(&$source, LC_Page_Ex $objPage, $filename)
     {
-        if (defined('ADMIN_FUNCTION') && ADMIN_FUNCTION) {
+        if (GC_Utils_Ex::isAdminFunction()) {
             $deviceType = DEVICE_TYPE_ADMIN;
         } else {
             $deviceType = SC_Display_Ex::detectDevice();
