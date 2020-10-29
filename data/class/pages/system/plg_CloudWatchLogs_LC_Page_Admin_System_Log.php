@@ -43,7 +43,7 @@ class plg_CloudWatchLogs_LC_Page_Admin_System_Log extends LC_Page_Admin_System_L
         foreach ($result['events'] as $event) {
             $log = json_decode($event['message'], true);
             $arrLogs[] = [
-                'date' => $log['datetime'],
+                'date' => isset($log['datetime']['date']) ? $log['datetime']['date'] : '',
                 'path' => isset($log['extra']['url']) ? $log['extra']['url'] : '',
                 'body' => $log['message'],
             ];
