@@ -67,7 +67,7 @@ class CloudWatchLogs extends SC_Plugin_Base
         if ($deviceType === DEVICE_TYPE_ADMIN) {
             if (strpos($filename, 'system/log.tpl') !== false) {
                 $source = str_replace('<table class="list log">', '<table class="list log">' . "\n" . '<col width="10%"><col width="30%"><col width="60%">', $source);
-                $source .= '<style>.log td{word-break: break-word;}</style>';
+                $source .= '<style>.log td{word-break: break-all;}</style>';
             }
         }
     }

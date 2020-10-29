@@ -47,7 +47,7 @@ trait LoggerTrait
                 $debugMessage .= 'customer_id = ' . $_SESSION['customer']['customer_id'] . "\n";
             }
             if (\GC_Utils_Ex::isAdminFunction()) {
-                $debugMessage .= 'login_id = ' . $_SESSION['login_id'] . '(' . $_SESSION['authority'] . ')' . '[' . session_id() . ']' . "\n";
+                $debugMessage .= 'login_id = ' . $_SESSION['login_id'] . ' auth=' . $_SESSION['authority'] . ' sid=' . session_id() . "\n";
             }
             $debugMessage .= \GC_Utils_Ex::toStringBacktrace(\GC_Utils_Ex::getDebugBacktrace());
 
