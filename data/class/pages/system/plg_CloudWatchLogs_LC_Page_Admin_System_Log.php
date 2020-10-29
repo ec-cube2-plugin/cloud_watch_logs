@@ -32,7 +32,7 @@ class plg_CloudWatchLogs_LC_Page_Admin_System_Log extends LC_Page_Admin_System_L
                 'startFromHead' => false,
             ]);
         } catch (CloudWatchLogsException $e) {
-            if ($e->getAwsErrorType() === 'ResourceNotFoundException') {
+            if ($e->getAwsErrorCode() === 'ResourceNotFoundException') {
                 return [];
             }
 
