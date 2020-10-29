@@ -26,7 +26,7 @@ class plg_CloudWatchLogs_LC_Page_Admin_System_Log extends LC_Page_Admin_System_L
         $client = GC_Utils_Ex::getCloudWatchLogsClient();
         try {
             $result = $client->getLogEvents([
-                'limit' => $this->line_max,
+                'limit' => (int) $this->line_max,
                 'logGroupName' => $group,
                 'logStreamName' => $stream,
                 'startFromHead' => false,
