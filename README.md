@@ -4,40 +4,71 @@ CloudWatch Logs プラグイン
 本プラグインについて
 -----------------
 
-EC-CUBE2のロギングをCloudWatch Logsに置き換えます。
-`GC_Utils::gfPrintLog` メソッドを置き換えます。
+EC-CUBE2のロギングをMonologを利用し、CloudWatch Logsに置き換えます。
+EC-CUBE2内で利用されている `GC_Utils_Ex::gfPrintLog` `GC_Utils::gfPrintLog` メソッドを置き換えます。
 
+管理画面の システム設定＞EC-CUBE ログ表示 でCloudWatch Logsのログが確認可能です。
 
-設定
-----
+`SC_Helper_HandleError` も置換され、Json formatのログで非常に綺麗な形で出力されます。
+そのため、CloudWatch Logs Insights でのログ分析も非常に容易になります。
 
-`%name%` は、 `error` のようにファイル名に置き換えられます。
-
-```
-define('AWS_REGION', 'ap-northeast-1');
-define('CLOUDWATCH_LOGS_GROUP_NAME', '/eccube/SampleLogGroupName/%name%');
-define('CLOUDWATCH_LOGS_STREAM_NAME', 'eccube');
-```
-
-オプションで以下のパラメーターも設定できます。
-
-```
-define('CLOUDWATCH_LOGS_RETENTION', 14);
-```
+ブラウザ上にはセキュリティ上 `session_id` をできるだけ表示しないようにします。
 
 
 アーキテクチャ
 ------------
 
-本来、 `GC_Utils` は拡張できないためトリッキーな方法を利用しクラスを拡張しています。
+以下の2点はプラグインをComposerでインストールした場合、EC-CUBE2上でプラグインを有効にする前に有効化されます。
+もし、直接インストールしている場合には、プラグインの `vendor/autoload.php` を `html/define.php` の一番最後で読み込む必要があります。
+
+`GC_Utils` は拡張できないためトリッキーな方法を利用しクラスを拡張しています。
 また、振る舞いの悪い決済プラグインでは、 `GC_Utils_Ex` を利用せず `GC_Utils` を直接利用しているため、本プラグインでは `GC_Utils` を拡張しています。
+
+`SC_Helper_HandleError_Ex` も同様に置き換えられます。
+こちらは、 `app_initial.php` にて読み込まれるため、事前に置換します。
+
+
+設定
+----
+
+`config.php` に以下を追加してください。
+
+```
+define('AWS_REGION', 'ap-northeast-1');
+define('AWS_ACCESS_KEY_ID', '');
+define('AWS_SECRET_ACCESS_KEY', '');
+define('CLOUDWATCH_LOGS_GROUP_NAME', '/eccube/SampleLogGroupName/%name%');
+define('CLOUDWATCH_LOGS_STREAM_NAME', 'eccube');
+define('CLOUDWATCH_LOGS_RETENTION', null);
+```
+
+### CLOUDWATCH_LOGS_GROUP_NAME
+
+CloudWatch Logs のロググループ
+
+`%name%` はログファイルに指定されているファイル名のうち、 `.log` を省いたものに置換されます。
+
+例)  `ERROR_LOG_REALFILE` -> `error`
+
+### CLOUDWATCH_LOGS_STREAM_NAME
+
+CloudWatch Logs のログストリーム
+
+`%name%` はログファイルに指定されているファイル名のうち、 `.log` を省いたものに置換されます。
+
+例)  `ERROR_LOG_REALFILE` -> `error`
+
+### CLOUDWATCH_LOGS_RETENTION
+
+CloudWatch Logs のログ保持期間。 `null` を設定すると失効しなくなります。
+作成時のみ有効です。
 
 
 IAM
 ---
 
 AWSでの動作では、IAM Role を利用することを *強く* 推奨します。EC2インスタンスなどに IAM Role を付与してください。
-IAM User の `AWS_ACCESS_KEY_ID` `AWS_SECRET_ACCESS_KEY` は利用してはいけません。
+IAM User の `AWS_ACCESS_KEY_ID` `AWS_SECRET_ACCESS_KEY` は利用しないようにしましょう。
 
 必要な権限は以下です。
 

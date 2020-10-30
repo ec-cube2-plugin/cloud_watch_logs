@@ -3,6 +3,7 @@
 namespace CloudWatchLogs\Logger;
 
 use Aws\CloudWatchLogs\CloudWatchLogsClient;
+use CloudWatchLogs\Monolog\Processor\UserProcessor;
 use Maxbanton\Cwh\Handler\CloudWatch;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Logger;
@@ -32,9 +33,20 @@ trait LoggerTrait
             $path = \GC_Utils_Ex::isAdminFunction() ? ADMIN_LOG_REALFILE : LOG_REALFILE;
         }
 
+        // logger
         $name = basename($path, '.log');
+        $logger = static::getLogger($name);
 
-        $logger = static::getCloudWatchLogsLogger($name);
+        // stack trace
+        if ($verbose) {
+            foreach ($logger->getHandlers() as $handler) {
+                $formatter = $handler->getFormatter();
+                if (method_exists($formatter, 'includeStacktraces')) {
+                    $formatter->includeStacktraces(true);
+                }
+            }
+        }
+
         if ($name === 'error') {
             $logger->error($msg);
         } else {
@@ -42,16 +54,12 @@ trait LoggerTrait
         }
 
         if ($verbose) {
-            $debugMessage = '';
-            if (\GC_Utils_Ex::isFrontFunction()) {
-                $debugMessage .= 'customer_id = ' . $_SESSION['customer']['customer_id'] . "\n";
+            foreach ($logger->getHandlers() as $handler) {
+                $formatter = $handler->getFormatter();
+                if (method_exists($formatter, 'includeStacktraces')) {
+                    $formatter->includeStacktraces(false);
+                }
             }
-            if (\GC_Utils_Ex::isAdminFunction()) {
-                $debugMessage .= 'login_id = ' . $_SESSION['login_id'] . ' auth=' . $_SESSION['authority'] . ' sid=' . session_id() . "\n";
-            }
-            $debugMessage .= \GC_Utils_Ex::toStringBacktrace(\GC_Utils_Ex::getDebugBacktrace());
-
-            $logger->debug($debugMessage);
         }
     }
 
@@ -83,7 +91,7 @@ trait LoggerTrait
      * @return Logger
      * @throws \Exception
      */
-    public static function getCloudWatchLogsLogger($name)
+    public static function getLogger($name)
     {
         if (!defined('CLOUDWATCH_LOGS_GROUP_NAME') || empty(CLOUDWATCH_LOGS_GROUP_NAME)) {
             throw new \Exception('CLOUDWATCH_LOGS_GROUP_NAME を設定してください');
@@ -105,9 +113,12 @@ trait LoggerTrait
             $handler = new CloudWatch($client, $group, $stream, $retention, 10000);
             $handler->setFormatter(new JsonFormatter());
 
+            // logger
             $logger = new Logger($name);
-            $logger->pushHandler($handler);
-            $logger->pushProcessor(new WebProcessor());
+            $logger
+                ->pushHandler($handler)
+                ->pushProcessor(new WebProcessor())
+                ->pushProcessor(new UserProcessor());
 
             self::$logger[$name] = $logger;
         }
