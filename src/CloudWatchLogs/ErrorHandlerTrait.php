@@ -22,8 +22,7 @@ trait ErrorHandlerTrait
         error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE & ~E_DEPRECATED & ~E_STRICT);
         ini_set('display_errors', 0);
 
-        $name = basename(ERROR_LOG_REALFILE, '.log');
-        $logger = \GC_Utils_Ex::getCloudWatchLogsLogger($name);
+        $logger = \GC_Utils_Ex::getCloudWatchLogsLogger('error');
         ErrorHandler::register($logger);
 
         if (!(defined('SAFE') && SAFE === true) && !(defined('INSTALL_FUNCTION') && INSTALL_FUNCTION === true)) {
