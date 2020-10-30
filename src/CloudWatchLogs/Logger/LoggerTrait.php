@@ -38,7 +38,7 @@ trait LoggerTrait
         $logger = static::getLogger($name);
 
         // stack trace
-        if ($verbose) {
+        if ($verbose && $name !== 'error') {
             foreach ($logger->getHandlers() as $handler) {
                 $formatter = $handler->getFormatter();
                 if (method_exists($formatter, 'includeStacktraces')) {
@@ -53,7 +53,7 @@ trait LoggerTrait
             $logger->info($msg);
         }
 
-        if ($verbose) {
+        if ($verbose && $name !== 'error') {
             foreach ($logger->getHandlers() as $handler) {
                 $formatter = $handler->getFormatter();
                 if (method_exists($formatter, 'includeStacktraces')) {
@@ -112,6 +112,14 @@ trait LoggerTrait
             }
             $handler = new CloudWatch($client, $group, $stream, $retention, 10000);
             $handler->setFormatter(new JsonFormatter());
+
+            // error のみ includeStacktraces をデフォルトで有効に
+            if ($name === 'error') {
+                $formatter = $handler->getFormatter();
+                if (method_exists($formatter, 'includeStacktraces')) {
+                    $formatter->includeStacktraces(true);
+                }
+            }
 
             // logger
             $logger = new Logger($name);
