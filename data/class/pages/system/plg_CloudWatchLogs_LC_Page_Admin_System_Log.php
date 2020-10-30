@@ -7,6 +7,16 @@ use Aws\CloudWatchLogs\Exception\CloudWatchLogsException;
  */
 class plg_CloudWatchLogs_LC_Page_Admin_System_Log extends LC_Page_Admin_System_Log
 {
+    public $arrAUTHORITY;
+
+    public function init()
+    {
+        parent::init();
+
+        $masterData = new \SC_DB_MasterData_Ex();
+        $this->arrAUTHORITY = $masterData->getMasterData('mtb_authority');
+    }
+
     /**
      * EC-CUBE ログを取得する.
      *
@@ -53,6 +63,7 @@ class plg_CloudWatchLogs_LC_Page_Admin_System_Log extends LC_Page_Admin_System_L
                 'date' => $date,
                 'path' => isset($log['extra']['url']) ? $log['extra']['url'] : '',
                 'body' => $body,
+                'log' => $log,
             ];
         }
 
