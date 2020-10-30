@@ -8,6 +8,10 @@ trait ErrorHandlerTrait
 {
     public static function load()
     {
+        // config.php 読み込み
+        $objInit = new \SC_Initial_Ex();
+        $objInit->requireInitialConfig();
+
         if (!defined('CLOUDWATCH_LOGS_GROUP_NAME') || empty(CLOUDWATCH_LOGS_GROUP_NAME)
             || !defined('CLOUDWATCH_LOGS_STREAM_NAME') || empty(CLOUDWATCH_LOGS_STREAM_NAME)) {
             parent::load();
