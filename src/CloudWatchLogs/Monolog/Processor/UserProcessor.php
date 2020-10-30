@@ -11,7 +11,7 @@ class UserProcessor implements ProcessorInterface
      */
     public function __invoke(array $records)
     {
-        if (\GC_Utils_Ex::isFrontFunction()) {
+        if ($this->isFrontFunction()) {
             if (isset($_SESSION['customer']) && $_SESSION['customer']) {
                 $records['extra']['customer']['customer_id'] = $_SESSION['customer']['customer_id'];
                 $records['extra']['customer']['email'] = $_SESSION['customer']['email'];
@@ -22,7 +22,7 @@ class UserProcessor implements ProcessorInterface
             $records['extra']['session_id'] = session_id();
         }
 
-        if (\GC_Utils_Ex::isAdminFunction()) {
+        if ($this->isAdminFunction()) {
             if (isset($_SESSION['login_id'])) {
                 $records['extra']['member']['login_id'] = $_SESSION['login_id'];
                 $records['extra']['member']['authority'] = $_SESSION['authority'];
@@ -34,5 +34,15 @@ class UserProcessor implements ProcessorInterface
         }
 
         return $records;
+    }
+
+    public function isFrontFunction()
+    {
+        return defined('FRONT_FUNCTION') && FRONT_FUNCTION === true;
+    }
+
+    public function isAdminFunction()
+    {
+        return defined('ADMIN_FUNCTION') && ADMIN_FUNCTION === true;
     }
 }
