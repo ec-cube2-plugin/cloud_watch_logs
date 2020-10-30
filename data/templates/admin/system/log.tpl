@@ -21,7 +21,7 @@
         padding: 0 20px;
     }
     .c-log__row:last-child {
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
     .c-log__row.is-header {
         position: relative;
@@ -62,25 +62,30 @@
     .c-log__row.is-header.is-emergency:before {
         background-color: #d9534f;
     }
+    .c-log__row.is-header + .c-log__row {
+        margin: 10px 0;
+    }
 
     .c-log__level {
         margin-right: 10px;
         white-space: nowrap;
     }
 
-    .c-log__date {
-        margin-right: 20px;
-        white-space: nowrap;
+    .c-log__http_method {
+        margin-right: 10px;
     }
 
     .c-log__url {
-        margin-left: auto;
-        white-space: nowrap;
+        margin-right: 10px;
         overflow: hidden;
     }
 
+    .c-log__date {
+        margin-left: auto;
+        white-space: nowrap;
+    }
+
     .c-log__message {
-        margin: 0 0 10px 0;
     }
 
     .c-log__context {
@@ -94,6 +99,7 @@
         display: none;
         padding: 10px;
         border: 1px solid #dddddd;
+        background-color: #fcfcfc;
     }
 
     .c-log__member {
@@ -113,7 +119,6 @@
 
     /* c-icon */
     .c-icon {
-        font-family: Monaco,Consolas,Courier New,monospace;
         display: inline-block;
         padding: 4px;
         border-radius: 4px;
@@ -151,35 +156,43 @@
 
     .c-icon.is-debug {
         border-color: #777;
-        color: #777;
+        background-color: #777;
+        color: #fff;
     }
     .c-icon.is-info {
         border-color: #5bc0de;
-        color: #5bc0de;
+        background-color: #5bc0de;
+        color: #fff;
     }
     .c-icon.is-notice {
         border-color: #5bc0de;
-        color: #5bc0de;
+        background-color: #5bc0de;
+        color: #fff;
     }
     .c-icon.is-warning {
         border-color: #f0ad4e;
-        color: #f0ad4e;
+        background-color: #f0ad4e;
+        color: #fff;
     }
     .c-icon.is-error {
         border-color: #d9534f;
-        color: #d9534f;
+        background-color: #d9534f;
+        color: #fff;
     }
     .c-icon.is-critical {
         border-color: #d9534f;
-        color: #d9534f;
+        background-color: #d9534f;
+        color: #fff;
     }
     .c-icon.is-alert {
         border-color: #d9534f;
-        color: #d9534f;
+        background-color: #d9534f;
+        color: #fff;
     }
     .c-icon.is-emergency {
         border-color: #d9534f;
-        color: #d9534f;
+        background-color: #d9534f;
+        color: #fff;
     }
 
     /* c-date */
@@ -223,10 +236,15 @@
     .c-context__class {
         font-family: Monaco,Consolas,Courier New,monospace;
         color: #7c7c7c;
+        font-weight: bold;
+    }
+    .c-context__type {
+        font-family: Monaco,Consolas,Courier New,monospace;
     }
     .c-context__function {
         font-family: Monaco,Consolas,Courier New,monospace;
         color: #7c7c7c;
+        font-weight: bold;
     }
 
     /* c-member */
@@ -261,6 +279,7 @@
         position: absolute;
         left: 0;
         font-family: Monaco,Consolas,Courier New,monospace;
+        line-height: 17px;
         color: #7c7c7c;
     }
     .c-list__item + .c-list__item {
@@ -295,18 +314,23 @@
                 <span class="c-icon is-<!--{$log.level_name|lower}--> is-large"><!--{$log.level_name}--></span>
             </div>
 
-            <div class="c-log__date">
-                <span class="c-date"><i class="far fa-clock"></i> <!--{$log.datetime.date}--></span>
+            <!--{if $log.extra.url}-->
+            <div class="c-log__http_method">
+                <div class="c-http_method">
+                    <span class="c-icon is-<!--{$log.extra.http_method|lower}-->"><!--{$log.extra.http_method}--></span>
+                </div>
             </div>
 
-            <!--{if $log.extra.url}-->
             <div class="c-log__url">
                 <div class="c-url">
-                    <span class="c-icon is-<!--{$log.extra.http_method|lower}--> is-small"><!--{$log.extra.http_method}--></span>
                     <!--{$log.extra.url}-->
                 </div>
             </div>
             <!--{/if}-->
+
+            <div class="c-log__date">
+                <span class="c-date"><i class="far fa-clock"></i> <!--{$log.datetime.date}--></span>
+            </div>
         </div>
 
         <div class="c-log__row">
@@ -326,7 +350,7 @@
             </div>
 
             <div class="c-log__trace-button">
-                <a href="#" class="c-icon is-small">Trace</a>
+                <a href="#"><i class="fas fa-angle-down"></i> Trace</a>
             </div>
         </div>
 
@@ -338,7 +362,7 @@
                     <li class="c-list__item">
                         <div class="c-context">
                             <!--{if $trace.file}--><span class="c-context__file"><!--{$trace.file|replace:$smarty.const.ROOT_REALDIR:''}--></span> in <!--{else}-->call <!--{/if}-->
-                            <!--{if $trace.class}--><span class="c-context__class"><!--{$trace.class}--></span>::<!--{/if}--><span class="c-context__function"><!--{$trace.function}--></span>
+                            <!--{if $trace.class}--><span class="c-context__class"><!--{$trace.class}--></span><span class="c-context__type"><!--{$trace.type}--></span><!--{/if}--><span class="c-context__function"><!--{$trace.function}--></span>
                             <!--{if $trace.line}-->at line <span class="c-context__line"><!--{$trace.line}--></span><!--{/if}-->
                         </div>
                     </li>
@@ -362,7 +386,8 @@
             <!--{if $log.extra.customer}-->
             <div class="c-log__customer">
                 <div class="c-customer">
-                    <span class="c-customer__customer_id"><i class="fas fa-user"></i> <!--{$log.extra.member.customer_id}--></span> <span class="c-customer__email"><i class="far fa-envelope"></i> <!--{$log.extra.customer.email}--></span>
+                    <span class="c-customer__customer_id"><i class="fas fa-user"></i> <!--{$log.extra.customer.customer_id|default:'anonymous'}--></span>
+                    <!--{if $log.extra.customer.email}--><span class="c-customer__email"><i class="far fa-envelope"></i> <!--{$log.extra.customer.email}--></span><!--{/if}-->
                 </div>
             </div>
             <!--{/if}-->
@@ -381,9 +406,19 @@
 </div>
 
 <script>
+var trace = false;
 $('.c-log__trace-button a').click(function (e) {
-    $(this).closest('.c-log__block').find('.c-log__trace').toggle();
+    if (trace) {
+        $(this).closest('.c-log__block').find('.c-log__trace').hide();
+        $(this).html('<i class="fas fa-angle-down"></i> Trace');
+        trace = false;
+    } else {
+        $(this).closest('.c-log__block').find('.c-log__trace').show();
+        $(this).html('<i class="fas fa-angle-up"></i> Trace');
+        trace = true;
+    }
+
     e.stopPropagation();
     e.preventDefault();
-})
+});
 </script>
