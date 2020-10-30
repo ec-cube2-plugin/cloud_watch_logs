@@ -15,7 +15,7 @@ class plugin_info
     static $CLASS_NAME = "CloudWatchLogs";
 
     /** プラグインバージョン(必須)：プラグインのバージョン. */
-    static $PLUGIN_VERSION = "1.2.1";
+    static $PLUGIN_VERSION = "1.2.2";
 
     /** 対応バージョン(必須)：対応するEC-CUBEバージョン. */
     static $COMPLIANT_VERSION = "2.13.5";
