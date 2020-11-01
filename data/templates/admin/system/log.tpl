@@ -67,8 +67,9 @@
     }
 
     .c-log__level {
-        margin-right: 10px;
+        margin-right: 20px;
         white-space: nowrap;
+        font-weight: bold;
     }
 
     .c-log__http_method {
@@ -195,6 +196,43 @@
         color: #fff;
     }
 
+    /* c-text */
+    .c-text {
+        color: #666;
+        font-size: 10px;
+    }
+    .c-text.is-small {
+        font-size: 9px;
+    }
+    .c-text.is-large {
+        font-size: 14px;
+    }
+
+    .c-text.is-debug {
+        color: #777;
+    }
+    .c-text.is-info {
+        color: #5bc0de;
+    }
+    .c-text.is-notice {
+        color: #5bc0de;
+    }
+    .c-text.is-warning {
+        color: #f0ad4e;
+    }
+    .c-text.is-error {
+        color: #d9534f;
+    }
+    .c-text.is-critical {
+        color: #d9534f;
+    }
+    .c-text.is-alert {
+        color: #d9534f;
+    }
+    .c-text.is-emergency {
+        color: #d9534f;
+    }
+
     /* c-date */
     .c-date {
         color: #7c7c7c;
@@ -311,7 +349,7 @@
     <div class="c-log__block">
         <div class="c-log__row is-header is-<!--{$log.level_name|lower}-->">
             <div class="c-log__level">
-                <span class="c-icon is-<!--{$log.level_name|lower}--> is-large"><!--{$log.level_name}--></span>
+                <span class="c-text is-<!--{$log.level_name|lower}--> is-large"><!--{$log.level_name}--></span>
             </div>
 
             <!--{if $log.extra.url}-->
@@ -349,9 +387,11 @@
                 </div>
             </div>
 
+            <!--{if $log.context.trace}-->
             <div class="c-log__trace-button">
                 <a href="#"><i class="fas fa-angle-down"></i> Trace</a>
             </div>
+            <!--{/if}-->
         </div>
 
         <!--{if $log.context.trace}-->
