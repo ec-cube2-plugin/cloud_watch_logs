@@ -69,4 +69,47 @@ class plg_CloudWatchLogs_LC_Page_Admin_System_Log extends LC_Page_Admin_System_L
 
         return array_reverse($arrLogs);
     }
+
+    /**
+     * ログファイルのパスを取得する
+     *
+     * セキュリティ面をカバーする役割もある。
+     */
+    public function getLogPath($log_name)
+    {
+        if (strlen($log_name) === 0) {
+            return LOG_REALFILE;
+        }
+        if (defined($const_name = $log_name . '_LOG_REALFILE')) {
+            return constant($const_name);
+        }
+        if ($log_name === 'PAYGENT' && defined('PAYGENT_LOG_PATH')) {
+            return PAYGENT_LOG_PATH;
+        }
+        if ($log_name === 'PAYPAL_EXPRESS' && defined('PAYPAL_EXPRESS_LOG_PATH')) {
+            return PAYPAL_EXPRESS_LOG_PATH;
+        }
+        if ($log_name === 'DROPPED_ITEMS_NOTICER' && defined('DROPPED_ITEMS_NOTICER_LOG')) {
+            return DROPPED_ITEMS_NOTICER_LOG;
+        }
+        trigger_error('不正なログが指定されました。', E_USER_ERROR);
+    }
+
+    public function loadLogList()
+    {
+        parent::loadLogList();
+
+        if (defined('PAYGENT_LOG_PATH') && PAYGENT_LOG_PATH) {
+            $this->arrLogList['PAYGENT'] = 'ペイジェントログファイル';
+        }
+
+        if (defined('PAYPAL_EXPRESS_LOG_PATH') && PAYPAL_EXPRESS_LOG_PATH) {
+            $this->arrLogList['PAYPAL_EXPRESS'] = 'ペイパルエクスプレスログファイル';
+        }
+
+        if (defined('DROPPED_ITEMS_NOTICER_LOG') && DROPPED_ITEMS_NOTICER_LOG) {
+            $this->arrLogList['DROPPED_ITEMS_NOTICER'] = 'ペイパルカゴ落ち通知メルマガ配信ログファイル';
+        }
+
+    }
 }
