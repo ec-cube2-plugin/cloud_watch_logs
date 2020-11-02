@@ -278,6 +278,7 @@
     }
     .c-context__type {
         font-family: Monaco,Consolas,Courier New,monospace;
+        color: #7c7c7c;
     }
     .c-context__function {
         font-family: Monaco,Consolas,Courier New,monospace;
@@ -413,7 +414,7 @@
         <!--{/if}-->
         <!--{/if}-->
 
-        <!--{if $log.extra.member || $log.extra.customer || $log.extra.ip}-->
+        <!--{if $log.extra.member || $log.extra.customer.customer_id || $log.extra.ip}-->
         <div class="c-log__row">
             <!--{if $log.extra.member}-->
             <div class="c-log__member">
@@ -423,10 +424,10 @@
             </div>
             <!--{/if}-->
 
-            <!--{if $log.extra.customer}-->
+            <!--{if $log.extra.customer.customer_id}-->
             <div class="c-log__customer">
                 <div class="c-customer">
-                    <span class="c-customer__customer_id"><i class="fas fa-user"></i> <!--{$log.extra.customer.customer_id|default:'anonymous'}--></span>
+                    <span class="c-customer__customer_id"><i class="fas fa-user"></i> <!--{$log.extra.customer.customer_id}--></span>
                     <!--{if $log.extra.customer.email}--><span class="c-customer__email"><i class="far fa-envelope"></i> <!--{$log.extra.customer.email}--></span><!--{/if}-->
                 </div>
             </div>
@@ -446,16 +447,14 @@
 </div>
 
 <script>
-var trace = false;
 $('.c-log__trace-button a').click(function (e) {
-    if (trace) {
-        $(this).closest('.c-log__block').find('.c-log__trace').hide();
+    var $trace = $(this).closest('.c-log__block').find('.c-log__trace');
+    if ($trace.is(':visible')) {
+        $trace.hide();
         $(this).html('<i class="fas fa-angle-down"></i> Trace');
-        trace = false;
     } else {
-        $(this).closest('.c-log__block').find('.c-log__trace').show();
+        $trace.show();
         $(this).html('<i class="fas fa-angle-up"></i> Trace');
-        trace = true;
     }
 
     e.stopPropagation();
